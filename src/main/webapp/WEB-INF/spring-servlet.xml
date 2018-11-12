@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:security="http://www.springframework.org/schema/security" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- Instruct Spring to perform declarative transaction management automatically on annotated classes. -->
+	<mvc:resources mapping="/resources/**" location="/resources/"/>  
+    <mvc:default-servlet-handler/>  
+    <mvc:annotation-driven/>  
+	<context:component-scan base-package="com.albany"></context:component-scan>
+	<context:annotation-config></context:annotation-config>
+
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>		
+		<property name="url" value="jdbc:mysql://localhost:3306/albany">
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+	
+	<tx:annotation-driven />
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>
+				<prop key="hibernate.validator.apply_to_ddl">false</prop>
+				<prop key="hibernate.validator.autoregister_listeners">false</prop>
+			</props>
+		</property>
+		
+		<property name="annotatedPackages">
+			<list>
+				<value>com.albany.career.utility</value>
+				<value>com.albany.career.dto</value>
+				<value>com.albany.career.entity</value>
+				<value>com.albany.career.controller</value>
+				<value>com.albany.career.service</value>
+				<value>com.albany.career.serviceImpl</value>
+				<value>com.albany.career.dao</value>
+				<value>com.albany.career.daoImpl</value>
+			</list>
+		</property>
+		<!-- Table details  -->
+		<property name="annotatedClasses">
+			<list>
+				<value>com.albany.career.entity.Registration</value>
+				<value>com.albany.career.entity.Roles</value>
+				<value>com.albany.career.entity.TestInfo</value>
+				<value>com.albany.career.entity.Degree</value>
+				<value>com.albany.career.entity.Major</value>
+				<value>com.albany.career.entity.EducationDetails</value>
+				<value>com.albany.career.entity.SkillsDetails</value>
+				<value>com.albany.career.entity.CertificationDetails</value>
+				<value>com.albany.career.entity.ProjectDetails</value>
+				<value>com.albany.career.entity.WorkDetails</value>
+				<value>com.albany.career.entity.DocumentsDetails</value>
+				<value>com.albany.career.entity.DocumentType</value>
+				<value>com.albany.career.entity.ApplicantForum</value>
+				<value>com.albany.career.entity.CounsellorForum</value>
+				<value>com.albany.career.entity.ApplicantTestInfo</value>
+				<value>com.albany.career.entity.ApplicantGrade</value>
+				<value>com.albany.career.entity.CounsellorDescription</value>
+				<value>com.albany.career.entity.CompanyDescription</value>
+				<value>com.albany.career.entity.JobType</value>
+				<value>com.albany.career.entity.JobPosts</value>
+				<value>com.albany.career.entity.JobsApplied</value>
+				<value>com.albany.career.entity.ProfileHits</value>
+				<value>com.albany.career.entity.Rating</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<mvc:interceptors>
+		<bean
+			class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+			<property name="sessionFactory" ref="sessionFactory" />
+		</bean>
+	</mvc:interceptors>
+	
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	
+	<!-- Required for REST services in order to bind the return value to the ResponseBody. -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<!-- Configures Spring MVC DataBinder instances globally -->
+		<property name="webBindingInitializer">
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="validator" ref="validator" />
+			</bean>
+		</property>
+		<property name="messageConverters">
+			<util:list>
+				<!-- Support JSON -->
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+			</util:list>
+		</property>
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="1000000000"></property><!-- Max 1GB[1000000000 bytes] data can be uploaded at one shot -->
+	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	<property name="host" value="smtp.gmail.com" />
+	<property name="port" value="587" />
+	<property name="username" value="username" />
+	<property name="password" value="password" />
+ 
+	<property name="javaMailProperties">
+	   <props>
+       	      <prop key="mail.smtp.auth">true</prop>
+       	      <prop key="mail.smtp.starttls.enable">true</prop>
+       	   </props>
+	</property>
+</bean>
+	
+</beans>
