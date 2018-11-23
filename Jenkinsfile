@@ -5,8 +5,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                sh 'make' 
-                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true 
+                sh 'mvn clean install -DskipTests' 
+                //archiveArtifacts artifacts: '**/target/*.war', fingerprint: true 
+                echo 'Building Success'
             }
         }
     }
