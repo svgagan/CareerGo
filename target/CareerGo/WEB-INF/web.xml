@@ -16,9 +16,6 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	<!-- <listener>
-		<listener-class>com.wenzins.his.listener.CustomContextLoaderListener</listener-class>
-	</listener> -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
