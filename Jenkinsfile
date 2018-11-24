@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                bat 'mvn clean install -DskipTests' 
+                bat 'mvn clean' 
                 //archiveArtifacts artifacts: '**/target/*.war', fingerprint: true 
                 echo 'Building Success'
             }
