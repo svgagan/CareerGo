@@ -7,3 +7,6 @@ It’s an web based job portal project with exams and career guidance as additio
 
 # Pre-requisites
 - MySQL database should UP.
+
+# URL
+http://localhost:8081/CareerGo/login
