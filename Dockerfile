@@ -1,14 +1,8 @@
 FROM tomcat:7-jre7
 MAINTAINER gagan--8@gmail.com
 
-#RUN ["rm", "-fr", "/usr/local/tomcat/webapps/CareerGo"]
-#ENTRYPOINT ["mvn clean install"]
-#COPY ./target/CareerGo.war /usr/local/tomcat/webapps/CareerGo.war
-
-#CMD ["catalina.sh", "run"]
-
 #Install git
-RUN apt-get update \ && apt-get install -y git
+RUN apt-get update && apt-get install -y git
 
 #Create & Change directory and clone the project Public POM repo into it.
 RUN mkdir /usr/myProject \
@@ -17,6 +11,10 @@ RUN mkdir /usr/myProject \
     
 RUN cd /usr/myProject/CareerGo 
 
-CMD ["mvn clean install"]    
+RUN apt-get install -y maven && apt-get install -y openjdk-7-jdk
+
+RUN mvn clean install    
 
 COPY /usr/myProject/CareerGo/target/CareerGo.war /usr/local/tomcat/webapps/CareerGo.war
+
+CMD ["catalina.sh", "run"]
